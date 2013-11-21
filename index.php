@@ -1,11 +1,11 @@
 <?php
 require_once 'load.php';
-ob_start();
 set_time_limit(300);
+
 
 // Print out authorization URL.
 if ($authHelper->isAuthorized()) {
-  $revoke= "<p id=\"revoke\"><a href='$revokeUrl'>Revoke access</a></p>";
+  $revoke= "<p id=\"revoke\"><a href='$revokeUrl'>Revoke access</a> | <a href=\"./images/doc.png\" target=\"_blank\">Documentation</a></p>";
 } else {
   echo "<p id=\"revoke\"><a href='$authUrl'>Grant access to Google Analytics data</a></p>";
   exit;
@@ -13,7 +13,7 @@ if ($authHelper->isAuthorized()) {
 
 //Deal with POST datas
 require_once './src/datas.php';
-if(!isset($_POST['export']))
+if(!isset($_GET['export']))
 {
     header('Content-Type: text/html; charset=utf-8');
        ?> <!DOCTYPE>
@@ -30,21 +30,19 @@ if(!isset($_POST['export']))
       <body>
       <?php
 }
-if(!empty($notif))
-  echo '<div id="notifs"><p>'.$notif.'</p></div>';
 
 if(isset($_GET['create_new']))
     require_once './includes/new.php';
-else if(isset($_GET['export']) && isset($_GET['name']))
+else if(isset($_GET['export']) && isset($_POST['code']))
     require_once './includes/export.php';
 else
     require_once './includes/index.php';
 
-
+echo $revoke;
 
 
 ?>
 
-    </body>
-    </html>
+</body>
+</html>
 

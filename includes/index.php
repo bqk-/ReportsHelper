@@ -34,7 +34,7 @@ echo    '<div id="left-box">
 if(isset($_GET['view'])&&$_GET['view']=='templates')
 {
     echo '<div id="templates">';
-    echo '<a href="?create_new" title="Create a new template">Create a new template</a>';
+    echo '<a href="?create_new" class="create_new" title="Create a new template">Create a new template</a>';
     echo '<ul id="templates_list">';
     $temp=scandir('./templates/');
     if(is_array($temp))
@@ -56,6 +56,17 @@ if(isset($_GET['view'])&&$_GET['view']=='templates')
                 }
             });
         </script>';
+    else if(isset($_POST['template_name']))
+        echo '<script type="text/javascript">
+            $.ajax({
+                url: "'.__DIR__.'/../templates/'.$_POST['template_name'].'.tpl",
+                type: "GET",
+                dataType: "html",
+                success: function(data) {            
+                    $(\'#right-wrapper\').html(data);
+                }
+            });
+        </script>';
 }
 else
 {
@@ -69,7 +80,7 @@ else
         if(file_exists(__DIR__.'/../'.$s->getId().'/template.tpl'))
         {
             $popups.='<div id="'.$s->getId().'" class="popup"><h3>Datas</h3>
-            <form method="POST" action="ajax.parser.php" id="form_'.$s->getId().'" class="view_data">
+            <form method="POST" action="./index.php?export" id="form_'.$s->getId().'" class="view_data">
                 For : <select name="month">';
                 foreach($months as $k=>$m)
                     {
@@ -85,13 +96,15 @@ else
                     <br />
                     <input type="hidden" name="code" value="'.$s->getId().'" />
                     <input type="submit" value="View" /><input type="button" value="Template only" class="tplOnly" />
+            </form>
             </div>';
             echo '<li>'.$s->getName().' - '.$s->getId().'<br />
-             <a href="" onclick="viewtemplate('.$s->getId().'); return false;" ><img src="./images/view.png" /></a> | <a href="" onclick="edit('.$s->getId().'); return false;" ><img src="./images/edit.png" /></a> | <a href="#"><img src="./images/export.png" /></a> | <a href="#"><img src="./images/email.png" /></a> | <a href="#" data-site="'.$s->getId().'" class="delete_site"><img src="./images/delete.png" /></a></li>';
+             <a href="#" class="viewtemplate" data-code="'.$s->getId().'"><img src="./images/view.png" /></a> | <a href="#" onclick="edit('.$s->getId().'); return false;" ><img src="./images/edit.png" /></a> | <a href="#" class="export_pdf" data-code="'.$s->getId().'"><img src="./images/export.png" /></a> | <a href="#"><img src="./images/email.png" /></a> | <a href="#" data-site="'.$s->getId().'" class="delete_site"><img src="./images/delete.png" /></a></li>';
         }
         else
         {
-            $popups.='<div id="'.$s->getId().'" class="popup"><form method="POST" class="new" action="?create_new" enctype="multipart/form-data">
+            $popups.='<div id="'.$s->getId().'" class="popup">
+            <form method="POST" class="new" action="?create_new" enctype="multipart/form-data">
                 Name : <input type="text" readOnly="true" name="name" value="'.$s->getName().'" /><br />
                 URL  : <input type="text" readOnly="true" name="url" value="'.$s->getWebsiteUrl().'" /><br />
                 Code : <input type="text" readOnly="true" name="code" value="'.$s->getId().'" /><br />
@@ -104,13 +117,12 @@ else
             Emails : <input type="text" name="emails" value="marketing@webfullcircle.com, dean.vong@webfullcircle.com" style="width:100%" /><br />
                 <input type="submit" value="Create" class="new_button" /></form></div>';
             echo '<li>'.$s->getName().' - '.$s->getId().'<br />
-                        <a href="" onclick="popupsite('.$s->getId().'); return false;" ><img src="./images/new.png" /></a> | <a href="#"><img src="./images/export.png" /></a> | <a href="#"><img src="./images/email.png" /></a></li>';
+                        <a href="" onclick="popupsite('.$s->getId().'); return false;" ><img src="./images/new.png" /></a></li>';
         }
     }
     echo '</ul>';
     echo '</div>';
 }
-echo $revoke;
 echo '</div>';
 echo '<div id="right-box"><div id="right-wrapper">';
 if(isset($_POST['code'])&& intval($_POST['code'])>0)

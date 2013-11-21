@@ -5,6 +5,10 @@ function parseTpl($f,$remove=false)
 {
     $is_intextarea=false;
     $textarea='';
+    if($remove)
+        $i=0;
+    else
+        $i=1;
     while (($buffer = fgets($f, 4096)) !== false) {
         if(preg_match('#<page #', $buffer) && !$is_intextarea)
         {
@@ -63,7 +67,7 @@ else if(isset($_POST) && !empty($_POST))
     $f=fopen(__DIR__.'/../'.intval($_POST['code']).'/profile.ini','w+');
     fwrite($f,serialize($infos));
     fclose($f);
-    $textarea='<textarea name="content[0]" style="display:none;">
+    $textarea='<textarea name="content[0]" id="content0" style="display:none;">
         <p style="text-align: center;"><img src="'.str_replace(ABS_URL,REAL_URL,__DIR__.'/../'.intval($_POST['code']).'/logo-'.intval($_POST['code'])).'.png" alt="Logo" /></p>
         <p style="text-align: left;">&nbsp;</p>
         <p style="text-align: left;">&nbsp;</p>
@@ -96,7 +100,7 @@ else {
 
 <a href="#" onclick="emptyView(); return false;" style="float:left;position:absolute;top:0;left:-60px;">&lt; Back</a> 
 <div id="editor">
-  <form method="POST" action="index.php?view=templates" style="width:70%;float:left;" id="form_tpl">
+  <form method="POST" action="index.php<?php if(!is_array($infos)) echo '?view=templates'; ?>" style="width:70%;float:left;" id="form_tpl">
     <?php
     if(is_array($infos))
     {

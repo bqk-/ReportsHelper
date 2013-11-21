@@ -72,7 +72,7 @@ function new_vs_returning_pie()
   global $demo;
    //New vs Returning
   $data=cache_data('new_vs_returning_pie',MONTH,YEAR);
-  if(!$data)
+  if(!$data && !file_exists(__DIR__.'/'.TABLE_ID.'/cache/'.MONTH.'-'.YEAR.'-pie.png'))
   {
     $from=YEAR.'-'.MONTH.'-01';
     $to=YEAR.'-'.MONTH.'-'.cal_days_in_month(CAL_GREGORIAN, MONTH, YEAR);
@@ -84,8 +84,12 @@ function new_vs_returning_pie()
       );
       $data=$demo->getHtmlOutput('ga:'.TABLE_ID,$from,$to,$metric,$optParams);
       add_cache($data,'new_vs_returning_pie',MONTH,YEAR);
+      return draw_pie(array($data[1][1],$data[2][1]),array($data[1][0].' - %.1f%%',$data[2][0].' - %.1f%%'),'New vs. Returning');
   }
-  return draw_pie(array($data[1][1],$data[2][1]),array($data[1][0].' - %.1f%%',$data[2][0].' - %.1f%%'),'New vs. Returning');
+  else if(file_exists(__DIR__.'/'.TABLE_ID.'/cache/'.MONTH.'-'.YEAR.'-pie.png'))
+      return '<img src="./'.TABLE_ID.'/cache/'.MONTH.'-'.YEAR.'-pie.png" />';
+  else
+      return draw_pie(array($data[1][1],$data[2][1]),array($data[1][0].' - %.1f%%',$data[2][0].' - %.1f%%'),'New vs. Returning');
 }
 
 function top_pages_table()

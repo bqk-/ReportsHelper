@@ -3,7 +3,7 @@ if(isset($_POST['content']))
 {
   if(isset($_POST['code'])&& intval($_POST['code'])>0) //SITE
   {
-    $infos=unserialize(file_get_contents(__DIR__.'/../'.intval($_GET['code']).'/profile.ini'));
+    $infos=unserialize(file_get_contents(__DIR__.'/../'.intval($_POST['code']).'/profile.ini'));
     $infos['emails']=str_replace(' ','',$_POST['emails']);
     $f=fopen(__DIR__.'/../'.intval($_POST['code']).'/profile.ini','w+');
     fwrite($f,serialize($infos));
@@ -12,7 +12,7 @@ if(isset($_POST['content']))
     @unlink(__DIR__.'/../'.intval($_POST['code']).'/template.tpl');
     foreach($_POST['content'] as $c)
     {
-      $content.=PHP_EOL.'<page class="page" style="width:100%" backimg="backgroundwfc.png" backcolor="white" backimgy="top" backimgx="center" backtop="26mm" backbottom="18mm">'.PHP_EOL;
+      $content.=PHP_EOL.'<page class="page" style="width:100%" backimg="images/backgroundwfc.png" backcolor="white" backimgy="top" backimgx="center" backtop="26mm" backbottom="18mm">'.PHP_EOL;
           //$content.='<page_header backtop="30mm" class="page_header">'.PHP_EOL;
           //$content.='</page_header>'.PHP_EOL;
       $content.=$c;
@@ -37,7 +37,7 @@ if(isset($_POST['content']))
     define('FILE',$name);
     foreach($_POST['content'] as $c)
     {
-      $content.=PHP_EOL.'<page class="page" style="width:100%" backimg="backgroundwfc.png" backcolor="white" backimgy="top" backimgx="center" backtop="26mm" backbottom="18mm">'.PHP_EOL;
+      $content.=PHP_EOL.'<page class="page" style="width:100%" backimg="images/backgroundwfc.png" backcolor="white" backimgy="top" backimgx="center" backtop="26mm" backbottom="18mm">'.PHP_EOL;
           //$content.='<page_header backtop="30mm" class="page_header">'.PHP_EOL;
           //$content.='</page_header>'.PHP_EOL;
       $content.=$c;

@@ -4,7 +4,7 @@ require_once ('src/jpgraph_pie.php');
 
 function draw_pie($d,$l,$title) {
 	$data = $d;
-	$filename=MONTH.'-'.YEAR.'-'.FILE.'-pie';
+	$filename=MONTH.'-'.YEAR.'-pie';
 	if(!file_exists($filename))
 	{
 		// A new pie graph
@@ -43,10 +43,10 @@ function draw_pie($d,$l,$title) {
 
 
 		// ... and stroke it
-		@unlink('./templates/'.$filename.'.png');
-		$graph->Stroke('./templates/'.$filename.'.png');
+		@unlink('./'.TABLE_ID.'/cache/'.$filename.'.png');
+		$graph->Stroke('./'.TABLE_ID.'/cache/'.$filename.'.png');
 	}
-	return '<img src="./templates/'.$filename.'.png" />';
+	return '<img src="./'.TABLE_ID.'/cache/'.$filename.'.png" />';
 }
 
 ?>

@@ -38,6 +38,7 @@ window.onload=function (){
     $('#overlay').click(function() {
         $('.popup').css('display','none');
         $(this).css('display','none');
+        return false;
     });
 
     var options = { 
@@ -56,16 +57,11 @@ window.onload=function (){
         $('.popup').css('display','none');
         return false;
     });
-    var options2 = { 
-            // other available options: 
-            url:      "ajax.parser.php",
-            dataType:  "html"  ,      // 'xml', 'script', or 'json' (expected server response type) 
-            //clearForm: true        // clear all form fields after successful submit 
-            success: function(data){
-                $('#right-wrapper').html(data);
-            }
-        }; 
+    var options2;
     $('.view_data').submit(function(){
+        $('#'+$(this).data('code')).find('.tplOnly').css('display','none');
+        if(options2['noajax'])
+            return true;
         loading();
         $(this).ajaxSubmit(options2);
         $('#overlay').css('display','none');
@@ -74,6 +70,7 @@ window.onload=function (){
     });
 
     $('.tplOnly').click(function(){
+        loading();
         var id=$(this).parent().find('input[name="code"]').val();
         $.ajax({
             url: "./"+id+"/template.tpl",
@@ -85,6 +82,7 @@ window.onload=function (){
         });
         $('#overlay').css('display','none');
         $('.popup').css('display','none');
+        return false;
     });
 
     $('.delete_site').click(function(){
@@ -98,6 +96,7 @@ window.onload=function (){
                 $(this).parent().remove();
             }
         });
+        return false;
     });
 
     $('.delete_tpl').click(function(){
@@ -111,6 +110,47 @@ window.onload=function (){
                 $(this).parent().remove();
             }
         });
+        return false;
+    });
+
+    $('.export_pdf').click(function() {
+        $('#'+$(this).data('code')).find('.tplOnly').css('display','none');
+        $('#'+$(this).data('code')).css('display','block');
+        $('#overlay').css('display','block');
+        options2 = { 
+            // other available options: 
+            noajax:true
+        }; 
+        return false;
+    });
+
+    $('.viewtemplate').click(function() {
+        $('#'+$(this).data('code')).css('display','block');
+        $('#overlay').css('display','block');
+        options2 = { 
+            // other available options: 
+            url:      "ajax.parser.php?"+Math.random(),
+            dataType:  "html"  ,      // 'xml', 'script', or 'json' (expected server response type) 
+            //clearForm: true        // clear all form fields after successful submit 
+            success: function(data){
+                $('#right-wrapper').html(data);
+            }
+        }; 
+        return false;
+    });
+
+    $('.create_new').click(function() {
+        $.ajax({
+            context: this,
+            url: "./includes/new.php",
+            type: "GET",
+            data: {'create_new':true},
+            dataType: "html",
+            success: function(data) {            
+                $('#right-wrapper').html(data);
+            }
+        });
+        return false;
     });
 };
 function emptyView()
@@ -121,12 +161,6 @@ function popupsite(id)
 {
     $('#overlay').css('display','block');
     $('#'+id).css('display','block');
-    return false;
-}
-function viewtemplate(id)
-{
-    $('#'+id).css('display','block');
-    $('#overlay').css('display','block');
     return false;
 }
 function edit(id)
@@ -156,7 +190,8 @@ function refreshTiny()
             toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
             toolbar2: "print preview media | forecolor backcolor emoticons | wfc",
             image_advtab: true,
-            content_css : "style.css" 
+            content_css : "style.css",
+            relative_urls: false
         });
 }
 function loading()

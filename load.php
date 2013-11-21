@@ -1,7 +1,9 @@
+
 <?php
-error_reporting(E_ALL ^ E_NOTICE);
-require_once __DIR__.'/srcGoogle/Google_Client.php';
-require_once __DIR__.'/srcGoogle/contrib/Google_AnalyticsService.php';
+error_reporting(0);
+ob_start();
+require_once __DIR__.'/../../../src/Google_Client.php';
+require_once __DIR__.'/../../../src/contrib/Google_AnalyticsService.php';
 require_once __DIR__.'/storage.php';
 require_once __DIR__.'/authHelper.php';
 require_once __DIR__.'/shortcodes.php';
@@ -10,9 +12,9 @@ require_once __DIR__.'/piegraph.php';
 
 // These must be set with values YOU obtains from the APIs console.
 // See the Usage section above for details.
-const REDIRECT_URL = '*****';
-const CLIENT_ID = '*****';
-const CLIENT_SECRET = '******';
+const REDIRECT_URL = '*************';
+const CLIENT_ID = '***********************';
+const CLIENT_SECRET = '********************';
 
 // The file name of this page. Used to create various query parameters to
 // control script execution.
@@ -21,9 +23,9 @@ const THIS_PAGE = 'index.php';
 const APP_NAME = 'WFC Analytics';
 const ANALYTICS_SCOPE = 'https://www.googleapis.com/auth/analytics.readonly';
 
-define(TABLE_ID,56955102);
-define(ABS_URL,'*****');
-define(REAL_URL,'*****');
+define('ABS_URL','*************'); //C:\\xamp\\htdocs\\www\\
+define('REAL_URL','***************'); //http://localhost/WFC/
+define('BASE_URL','***************'); //http://localhost/
 
 $demoErrors = null;
 
@@ -39,7 +41,7 @@ $client = new Google_Client();
 $client->setClientId(CLIENT_ID);
 $client->setClientSecret(CLIENT_SECRET);
 $client->setRedirectUri(REDIRECT_URL);
-$client->setDeveloperKey('******');
+$client->setDeveloperKey('*********');
 $client->setApplicationName(APP_NAME);
 $client->setScopes(
     array(ANALYTICS_SCOPE));
