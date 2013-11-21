@@ -1,27 +1,34 @@
 <?php
 function getSitesList(&$analytics) {
-    $result=array();
-    $accounts = $analytics->management_accounts->listManagementAccounts();
-    if (count($accounts->getItems()) > 0) {
-        $items = $accounts->getItems();
-        foreach($items as $a)
-        {
-            $webproperties = $analytics->management_webproperties->listManagementWebproperties($a->getId());
-            if (count($webproperties->getItems()) > 0) {
-                $items_p = $webproperties->getItems();
-                foreach($items_p as $b)
-                {
-                    $profiles = $analytics->management_profiles->listManagementProfiles($a->getId(), $b->getId());
-                    if (count($profiles->getItems()) > 0) {
-                        $items_s = $profiles->getItems();
-                        foreach ($items_s as $c) {
-                            $result[]=$c;
+
+    if(isset($_GET['refresh']) || empty($_SESSION['list_sites']))
+    {
+        $result=array();
+        $accounts = $analytics->management_accounts->listManagementAccounts();
+        if (count($accounts->getItems()) > 0) {
+            $items = $accounts->getItems();
+            foreach($items as $a)
+            {
+                $webproperties = $analytics->management_webproperties->listManagementWebproperties($a->getId());
+                if (count($webproperties->getItems()) > 0) {
+                    $items_p = $webproperties->getItems();
+                    foreach($items_p as $b)
+                    {
+                        $profiles = $analytics->management_profiles->listManagementProfiles($a->getId(), $b->getId());
+                        if (count($profiles->getItems()) > 0) {
+                            $items_s = $profiles->getItems();
+                            foreach ($items_s as $c) {
+                                $result[]=$c;
+                            }
                         }
                     }
                 }
             }
         }
+        $_SESSION['list_sites']=serialize($result);
     }
+    else
+        $result=unserialize($_SESSION['list_sites']);       
     return $result;
 }
 echo '<div id="overlay"></div>';
@@ -30,6 +37,7 @@ echo    '<div id="left-box">
                 <h1><a href="index.php">Sites</a></h1>
                 <h1><a href="?view=templates">Templates</a></h1>
             </div>';
+echo $revoke;
 
 if(isset($_GET['view'])&&$_GET['view']=='templates')
 {
@@ -73,6 +81,7 @@ else
     $months=array(1=>'January','February','March','April','May','June','July','August','September','October','November','December');
     $sites=getSitesList($analytics);
     $popups='<div id="popups">';
+    echo '<input type="text" value="filter" id="filter" /><br />';
     echo '<ul class="list-sites">';
     $t=scandir('./templates');
     foreach($sites as $s)
@@ -98,8 +107,12 @@ else
                     <input type="submit" value="View" /><input type="button" value="Template only" class="tplOnly" />
             </form>
             </div>';
-            echo '<li>'.$s->getName().' - '.$s->getId().'<br />
-             <a href="#" class="viewtemplate" data-code="'.$s->getId().'"><img src="./images/view.png" /></a> | <a href="#" onclick="edit('.$s->getId().'); return false;" ><img src="./images/edit.png" /></a> | <a href="#" class="export_pdf" data-code="'.$s->getId().'"><img src="./images/export.png" /></a> | <a href="#"><img src="./images/email.png" /></a> | <a href="#" data-site="'.$s->getId().'" class="delete_site"><img src="./images/delete.png" /></a></li>';
+            echo '<li>'.$s->getWebsiteUrl().'<br />
+             <a href="#" class="viewtemplate" data-code="'.$s->getId().'"><img src="./images/view.png" /></a> | 
+             <a href="#" onclick="edit('.$s->getId().'); return false;" ><img src="./images/edit.png" /></a> | 
+             <a href="#" class="export_pdf" data-code="'.$s->getId().'"><img src="./images/export.png" /></a> | 
+             <a href="#"><img src="./images/email.png" /></a> | 
+             <a href="#" data-code="'.$s->getId().'" class="delete_site"><img src="./images/delete.png" /></a></li>';
         }
         else
         {
@@ -116,7 +129,7 @@ else
             $popups.='            </select><br />
             Emails : <input type="text" name="emails" value="marketing@webfullcircle.com, dean.vong@webfullcircle.com" style="width:100%" /><br />
                 <input type="submit" value="Create" class="new_button" /></form></div>';
-            echo '<li>'.$s->getName().' - '.$s->getId().'<br />
+            echo '<li>'.$s->getWebsiteUrl().'<br />
                         <a href="" onclick="popupsite('.$s->getId().'); return false;" ><img src="./images/new.png" /></a></li>';
         }
     }

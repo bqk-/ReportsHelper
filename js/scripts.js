@@ -92,8 +92,10 @@ window.onload=function (){
             type: "GET",
             data: {'site':$(this).data('code')},
             dataType: "html",
-            success: function(data) {            
-                $(this).parent().remove();
+            success: function(data) {     
+                var code=$(this).data('code');       
+                $(this).parent().find('a').remove();
+                $(this).parent().append('<a href="#" onclick="popupsite('+code+'); return false;" ><img src="./images/new.png" /></a>');
             }
         });
         return false;
@@ -151,6 +153,27 @@ window.onload=function (){
             }
         });
         return false;
+    });
+
+    $('#filter').focus(function(){
+        $(this).val('');
+    });
+
+    $('#filter').keyup(function(){
+        var v=$(this).val();
+        if(v!='')
+        $('.list-sites li').each(function(index){
+            var t=$(this).text();
+                    console.log(v);
+            if(t.indexOf(v)==-1)
+                $(this).css('display','none');
+            else
+                 $(this).css('display','block');
+        });
+    else
+        $('.list-sites li').each(function(index){
+            $(this).css('display','block');
+        });
     });
 };
 function emptyView()
