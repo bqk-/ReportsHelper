@@ -58,8 +58,8 @@ else if(isset($_POST) && !empty($_POST))
         imagepng($img,__DIR__.'/../'.intval($_POST['code']).'/logo-'.intval($_POST['code']).'.png');
         if(substr(__DIR__.'/../'.intval($_POST['code']).'/logo-'.intval($_POST['code']).'.'.substr($_FILES['logo']['name'],strrpos($_FILES['logo']['name'],'.')+1,strlen($_FILES['logo']['name'])),-3)!='png')
             @unlink(__DIR__.'/../'.intval($_POST['code']).'/logo-'.intval($_POST['code']).'.'.substr($_FILES['logo']['name'],strrpos($_FILES['logo']['name'],'.')+1,strlen($_FILES['logo']['name'])));
+        $infos['logo']=str_replace(ABS_URL,REAL_URL,__DIR__.'/../'.intval($_POST['code']).'/logo-'.intval($_POST['code'])).'.png';
     }
-    $infos['logo']=str_replace(ABS_URL,REAL_URL,__DIR__.'/../'.intval($_POST['code']).'/logo-'.intval($_POST['code'])).'.png';
     $infos['name']=$_POST['name'];
     $infos['url']=$_POST['url'];
     $infos['code']=$_POST['code'];
@@ -100,15 +100,16 @@ else {
 
 <a href="#" onclick="emptyView(); return false;" style="float:left;position:absolute;top:0;left:-60px;">&lt; Back</a> 
 <div id="editor">
-  <form method="POST" action="index.php<?php if(!is_array($infos)) echo '?view=templates'; ?>" style="width:70%;float:left;" id="form_tpl">
+  <form method="POST" enctype="multipart/form-data" action="index.php<?php if(!is_array($infos)) echo '?view=templates'; ?>" style="width:70%;float:left;" id="form_tpl">
     <?php
     if(is_array($infos))
     {
         echo '<div id="profile">
-            <img src="'.$infos['logo'].'" alt="Logo" />
+            '.(!empty($infos['logo'])?'<img style="float:left;"src="'.$infos['logo'].'?t='.time().'" alt="Logo" />':'').'Upload a new one : <input type="file" name="logo" /><br />
             '.$infos['name'].' - '.$infos['url'].' - '.$infos['code'].'<br />
             Emails :<br />
             <input type="text" style="width:70%;" value="'.$infos['emails'].'" name="emails" />
+            <div style="clear: both;"></div> 
         </div>';
     }
     else

@@ -5,6 +5,17 @@ if(isset($_POST['content']))
   {
     $infos=unserialize(file_get_contents(__DIR__.'/../'.intval($_POST['code']).'/profile.ini'));
     $infos['emails']=str_replace(' ','',$_POST['emails']);
+    if(isset($_FILES['logo']) && $_FILES['logo']['size']>0)
+    {
+        echo $_FILES['logo']['tmp_name'];
+        move_uploaded_file($_FILES['logo']['tmp_name'], __DIR__.'/../'.intval($_POST['code']).'/logo-'.intval($_POST['code']).'.'.substr($_FILES['logo']['name'],strrpos($_FILES['logo']['name'],'.')+1,strlen($_FILES['logo']['name'])));
+        $img=imagecreatefromstring(file_get_contents(__DIR__.'/../'.intval($_POST['code']).'/logo-'.intval($_POST['code']).'.'.substr($_FILES['logo']['name'],strrpos($_FILES['logo']['name'],'.')+1,strlen($_FILES['logo']['name']))));
+        imagepng($img,__DIR__.'/../'.intval($_POST['code']).'/logo-'.intval($_POST['code']).'.png');
+        if(substr(__DIR__.'/../'.intval($_POST['code']).'/logo-'.intval($_POST['code']).'.'.substr($_FILES['logo']['name'],strrpos($_FILES['logo']['name'],'.')+1,strlen($_FILES['logo']['name'])),-3)!='png')
+            @unlink(__DIR__.'/../'.intval($_POST['code']).'/logo-'.intval($_POST['code']).'.'.substr($_FILES['logo']['name'],strrpos($_FILES['logo']['name'],'.')+1,strlen($_FILES['logo']['name'])));
+        $infos['logo']=str_replace(ABS_URL,REAL_URL,__DIR__.'/../'.intval($_POST['code']).'/logo-'.intval($_POST['code'])).'.png';
+    }
+
     $f=fopen(__DIR__.'/../'.intval($_POST['code']).'/profile.ini','w+');
     fwrite($f,serialize($infos));
     fclose($f);

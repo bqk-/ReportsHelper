@@ -65,6 +65,7 @@ if ($_GET['action'] == 'revoke') {
 
 } else if ($_GET['action'] == 'auth' || $_GET['code']) {
   $authHelper->authenticate();
+  $_GET['refresh']=true;
 
 } else {
   $authHelper->setTokenFromStorage();
@@ -91,3 +92,4 @@ if ($_GET['action'] == 'revoke') {
 // Consolidate errors and make sure they are safe to write.
 $errors = $demoError ? $demoError : $authHelper->getError();
 $errors = htmlspecialchars($errors, ENT_NOQUOTES);
+
