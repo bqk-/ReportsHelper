@@ -118,10 +118,10 @@ else
         {
             $popups.='<div id="'.$s->getId().'" class="popup">
             <form method="POST" class="new" action="?create_new" enctype="multipart/form-data">
-                Name : <input type="text" readOnly="true" name="name" value="'.$s->getName().'" /><br />
-                URL  : <input type="text" readOnly="true" name="url" value="'.$s->getWebsiteUrl().'" /><br />
+                Name : <input type="text" name="name" value="'.$s->getName().'" /><br />
+                URL  : <input type="text" name="url" value="'.$s->getWebsiteUrl().'" /><br />
                 Code : <input type="text" readOnly="true" name="code" value="'.$s->getId().'" /><br />
-                Logo : <input type="file" name="logo" /><br />
+                Logo : <input type="file" name="logo" /> (if no logo, name will be use, you can still upload a logo later on)<br />
                 Template <select name="template">';
             foreach($t as $v) if(substr($v,-3)=='tpl' && $v!='.' && $v!='..') {
                 $popups.= '<option value="'.$v.'">'.substr($v,0,-4).'</option>';

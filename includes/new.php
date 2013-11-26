@@ -1,25 +1,33 @@
 <?php
 include_once __DIR__.'/../load.php';
 
+//$remove : remove or not first page from editor view
 function parseTpl($f,$remove=false)
 {
     $is_intextarea=false;
     $textarea='';
-    if($remove)
-        $i=0;
-    else
-        $i=1;
+    $i=0;
     while (($buffer = fgets($f, 4096)) !== false) {
         if(preg_match('#<page #', $buffer) && !$is_intextarea)
         {
-            $textarea.='<textarea name="content['.$i.']" id="content'.$i.'" style="width:100%;height:400px;'.($remove&$i==0?'display:none;':'').'">';
-            $is_intextarea=true;
-            $i++;
+            if(!$remove)
+            {
+                $textarea.='<textarea name="content['.$i.']" id="content'.$i.'" style="width:100%;height:400px;">';
+                $is_intextarea=true;
+                $i++;
+            }
+ 
         }
         else if(preg_match('#</page>#', $buffer))
         {
-            $textarea.='</textarea>';
-            $is_intextarea=false;
+            if(!$remove)
+            {
+                $textarea.='</textarea>';
+                $is_intextarea=false;
+            }
+            else
+                $remove=false;
+            
         }
         else if(!preg_match('#<page_header#', $buffer) && !preg_match('#</page_header#', $buffer) && $is_intextarea)
         {
@@ -67,26 +75,6 @@ else if(isset($_POST) && !empty($_POST))
     $f=fopen(__DIR__.'/../'.intval($_POST['code']).'/profile.ini','w+');
     fwrite($f,serialize($infos));
     fclose($f);
-    $textarea='<textarea name="content[0]" id="content0" style="display:none;">
-        <p style="text-align: center;"><img src="'.str_replace(ABS_URL,REAL_URL,__DIR__.'/../'.intval($_POST['code']).'/logo-'.intval($_POST['code'])).'.png" alt="Logo" /></p>
-        <p style="text-align: left;">&nbsp;</p>
-        <p style="text-align: left;">&nbsp;</p>
-        <p style="text-align: left;">&nbsp;</p>
-        <p style="text-align: left;">&nbsp;</p>
-        <p style="text-align: left;">&nbsp;</p>
-        <p style="text-align: left;">&nbsp;</p>
-        <p style="text-align: center;"><strong><span style="color: #f57900;"><span style="font-size: 24px;">[month] [year]</span></span></strong></p>
-        <p style="text-align: left;">&nbsp;</p>
-        <p style="text-align: left;">&nbsp;</p>
-        <p style="text-align: left;">&nbsp;</p>
-        <p style="text-align: left;">&nbsp;</p>
-        <p style="text-align: left;">&nbsp;</p>
-        <p style="text-align: left;">&nbsp;</p>
-        <p style="text-align: center;"><strong><span style="color: #f57900;"><span style="font-size: 24px;">'.$_POST['url'].'</span> </span> </strong></p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-    </textarea>';
     $f=fopen(__DIR__.'/../templates/'.$_POST['template'],'r');
     $textarea.=parseTpl($f);
     $hidden='<input type="hidden" name="code" id="code" value="'.intval($_POST['code']).'" />';
@@ -100,16 +88,24 @@ else {
 
 <a href="#" onclick="emptyView(); return false;" style="float:left;position:absolute;top:0;left:-60px;">&lt; Back</a> 
 <div id="editor">
-  <form method="POST" enctype="multipart/form-data" action="index.php<?php if(!is_array($infos)) echo '?view=templates'; ?>" style="width:70%;float:left;" id="form_tpl">
+  <form method="POST" enctype="multipart/form-data" action="index.php<?php if(!is_array($infos)) echo '?view=templates'; ?>" style="width:100%;float:left;" id="form_tpl">
     <?php
     if(is_array($infos))
     {
         echo '<div id="profile">
-            '.(!empty($infos['logo'])?'<img style="float:left;"src="'.$infos['logo'].'?t='.time().'" alt="Logo" />':'').'Upload a new one : <input type="file" name="logo" /><br />
-            '.$infos['name'].' - '.$infos['url'].' - '.$infos['code'].'<br />
+            '.(!empty($infos['logo'])?
+                    '<span class="box_logo"><img style="float:left;"src="'.$infos['logo'].'?t='.time().'" alt="Logo" />
+                        </span><input type="hidden" value="1" name="keep_logo" />':
+                    '').'
+            (If there is no logo, the name will be used)
+            Upload a new one : <input type="file" name="logo" style="float:right;" /><br />
+            Name : <input type="text" name="sitename" value="'.stripslashes($infos['name']).'" /> <br />
+            URL : <input type="text" name="url" value="'.stripslashes($infos['url']).'" /> <br />
+            Code : '.$infos['code'].'<br />
             Emails :<br />
             <input type="text" style="width:70%;" value="'.$infos['emails'].'" name="emails" />
             <div style="clear: both;"></div> 
+            <input style="text-align:center;margin:0 auto;display:block;" type="submit" id="save_button" value="Save" />
         </div>';
     }
     else
@@ -122,5 +118,19 @@ else {
 </form>
 <script type="text/javascript">
     refreshTiny();
+
+    $('.box_logo').hover(function(){
+        $(this).append('<span class="del_img">REMOVE</span>');
+    },
+    function(){
+        $(this).find('span').remove();
+    });
+
+    $('.box_logo').click(function(){
+        $(this).parent().find('input[name="keep_logo"]').val(0);
+        $(this).remove();
+    });
+
+
 </script>
 </div>

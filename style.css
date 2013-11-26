@@ -14,6 +14,7 @@ ul
 {
   padding-left:16px;
   padding:0;
+  list-style-type: none;
 }
 .right 
 {
@@ -21,7 +22,7 @@ ul
 }
 #templates
 {
-  margin-top: 40px;
+  margin:40px 10px 10px 10px;
 }
 .template 
 {
@@ -169,7 +170,7 @@ p
 }
 #editor
 {
-  width:1150px;
+  width:100%;
   margin:0 auto;
   float:left;
 }
@@ -261,10 +262,26 @@ ul.list-sites {
 }
 #profile {
   width:100%;border:1px solid black;border-bottom:0;
+  height:400px;
+}
+#profile img {
+  width:234px;
+  height: auto;
 }
 #filter
 {
   margin-left:20px;
   width:90%;
   margin-top:10px;
+}
+.del_img
+{
+  width:214px;
+  position:absolute;
+  height:214px;
+  background-color: red;
+  opacity: 0.7;
+  top:10px;
+  left:10px;
+  cursor: pointer;
 }

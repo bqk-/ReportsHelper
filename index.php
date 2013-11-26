@@ -31,12 +31,14 @@ if(!isset($_GET['export']))
       <html>
       <head>
         <title>WFC</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href='http://fonts.googleapis.com/css?family=Merriweather+Sans:300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" type="text/css" href="style.css" />
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/scripts.js"></script>
         <script type="text/javascript" src="js/form.js"></script>
         <script type="text/javascript" src="tinymce/tinymce.min.js"></script>
-        <link href='http://fonts.googleapis.com/css?family=Merriweather+Sans:300' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" type="text/css" href="style.css" />
+        <script src="js/bootstrap.min.js"></script>
       </head>
       <body>
       <?php
