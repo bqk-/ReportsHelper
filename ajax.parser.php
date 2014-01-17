@@ -10,7 +10,7 @@ require_once 'load.php';
     exit('<!DOCTYPE>
     <html>
       <head>
-        <link rel="stylesheet" type="text/css" href="style.css" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
       </head>
     <body>
         '.parse_content(file_get_contents(__DIR__.'/'.TABLE_ID.'/template.tpl')).'

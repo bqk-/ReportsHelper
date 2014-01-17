@@ -71,12 +71,12 @@ else if(isset($_POST) && !empty($_POST))
     $infos['name']=$_POST['name'];
     $infos['url']=$_POST['url'];
     $infos['code']=$_POST['code'];
-    $infos['emails']=str_replace(' ','',$_POST['emails']);
+    $infos['emails']=str_replace(' ','',(isset($_POST['emails'])?$_POST['emails']:''));
     $f=fopen(__DIR__.'/../'.intval($_POST['code']).'/profile.ini','w+');
     fwrite($f,serialize($infos));
     fclose($f);
     $f=fopen(__DIR__.'/../templates/'.$_POST['template'],'r');
-    $textarea.=parseTpl($f);
+    $textarea=parseTpl($f);
     $hidden='<input type="hidden" name="code" id="code" value="'.intval($_POST['code']).'" />';
 }
 else {
@@ -88,9 +88,9 @@ else {
 
 <a href="#" onclick="emptyView(); return false;" style="float:left;position:absolute;top:0;left:-60px;">&lt; Back</a> 
 <div id="editor">
-  <form method="POST" enctype="multipart/form-data" action="index.php<?php if(!is_array($infos)) echo '?view=templates'; ?>" style="width:100%;float:left;" id="form_tpl">
+  <form method="POST" enctype="multipart/form-data" action="index.php<?php if(!isset($infos)) echo '?view=templates'; ?>" style="width:100%;float:left;" id="form_tpl">
     <?php
-    if(is_array($infos))
+    if(isset($infos) && is_array($infos))
     {
         echo '<div id="profile">
             '.(!empty($infos['logo'])?
@@ -109,7 +109,7 @@ else {
         </div>';
     }
     else
-        echo 'Name : <input type="text" name="template_name" value="'.substr($_GET['name'],0,-4).'" /><br />';
+        echo 'Name : <input type="text" name="template_name" value="'.(isset($_GET['name']) ? substr($_GET['name'],0,-4):'').'" /><br />';
     ?>
     <?php echo $textarea; ?>
     <input style="text-align:center;margin:0 auto;display:block;" type="submit" id="save_button" value="Save" />

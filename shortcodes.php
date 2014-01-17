@@ -1,4 +1,8 @@
 <?php
+
+//https://developers.google.com/analytics/devguides/reporting/core/dimsmets
+
+error_reporting(0);
 $list_shortcodes=array(
   'unique_visitors',
   'visits',
@@ -25,7 +29,7 @@ function unique_visitors()
     $data=$demo->getHtmlOutput('ga:'.TABLE_ID,$from,$to,$metric,$optParams);
     add_cache($data,'unique_visitors',MONTH,YEAR);
   }
-  return $data[1][0];
+  return intval($data[1][0]);
 }
 //Visits
 function visits()
@@ -44,7 +48,7 @@ function visits()
     $data=$demo->getHtmlOutput('ga:'.TABLE_ID,$from,$to,$metric,$optParams);
     add_cache($data,'visits',MONTH,YEAR);
   }
-  return $data[1][0];
+  return intval($data[1][0]);
 }
 function from_google()
 {
@@ -64,7 +68,7 @@ function from_google()
     $data=$demo->getHtmlOutput('ga:'.TABLE_ID,$from,$to,$metric,$optParams);
     add_cache($data,'from_google',MONTH,YEAR);
   }
-  return $data[1][1];
+  return intval($data[1][1]);
 }
 
 function new_vs_returning_pie()
@@ -84,12 +88,18 @@ function new_vs_returning_pie()
       );
       $data=$demo->getHtmlOutput('ga:'.TABLE_ID,$from,$to,$metric,$optParams);
       add_cache($data,'new_vs_returning_pie',MONTH,YEAR);
-      return draw_pie(array($data[1][1],$data[2][1]),array($data[1][0].' - %.1f%%',$data[2][0].' - %.1f%%'),'New vs. Returning');
+      if(!empty($data))
+        return draw_pie(array($data[1][1],$data[2][1]),array($data[1][0].' - %.1f%%',$data[2][0].' - %.1f%%'),'New vs. Returning');
+      else
+        return 'No datas';
   }
   else if(file_exists(__DIR__.'/'.TABLE_ID.'/cache/'.MONTH.'-'.YEAR.'-pie.png'))
       return '<img src="./'.TABLE_ID.'/cache/'.MONTH.'-'.YEAR.'-pie.png" />';
   else
+    if(!empty($data))
       return draw_pie(array($data[1][1],$data[2][1]),array($data[1][0].' - %.1f%%',$data[2][0].' - %.1f%%'),'New vs. Returning');
+    else
+        return 'No datas';
 }
 
 function top_pages_table()

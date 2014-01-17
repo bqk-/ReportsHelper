@@ -1,4 +1,4 @@
-body 
+body
 {
    font-family: 'Merriweather Sans', 'Verdana', sans-serif;
    font-size:16px;
@@ -16,15 +16,15 @@ ul
   padding:0;
   list-style-type: none;
 }
-.right 
+.right
 {
-  text-align:right; 
+  text-align:right;
 }
 #templates
 {
   margin:40px 10px 10px 10px;
 }
-.template 
+.template
 {
   text-align: center;
   width:126px;
@@ -43,7 +43,7 @@ a
   color:blue;
   text-decoration:underline;
 }
-#left-box 
+#left-box
 {
   position:fixed;
   margin:0;
@@ -92,19 +92,19 @@ a
 .toolbox a{
   display:block;
   border-radius: 3px;
-  background-color: none;
+  background-color: transparent;
 }
 .toolbox a:hover{
   background-color:gray;
 }
-page {
+.page {
   padding-top: 32mm;
   padding-left: 5mm;
   padding-right: 5mm;
   position:relative;
   display:block;
   background-color:white;
-  background:url('images/backgroundwfc.png') repeat-y;
+  background:url('../images/backgroundwfc.png') repeat-y;
   background-size:100%;
   min-height:280mm;
   width:210mm;
@@ -127,7 +127,7 @@ table {
 }
 th{
   padding:5px;
-  background-color:#f68f3d; 
+  background-color:#f68f3d;
   border:1px solid #1f5a8b;
 }
 td {
@@ -156,7 +156,7 @@ td {
 #tinymce {
   margin-bottom:10px;
   font-size: 16px;
-  background:url('images/backgroundwfc.png') repeat-y;
+  background:url('../images/backgroundwfc.png') repeat-y;
   background-size:100%;
   padding-top:32mm;
   padding-bottom: 24mm;
@@ -176,9 +176,9 @@ p
 }
 .nav h1 a
 {
-  padding:0 10px 0 0;  
+  padding:0 10px 0 0;
   color:black;
-  text-decoration: none;  
+  text-decoration: none;
   display:block;
   width:97%;
 }
@@ -284,4 +284,42 @@ ul.list-sites {
   top:10px;
   left:10px;
   cursor: pointer;
+}
+.sidebar-menu{
+height: 100%;
+background: #2a3542;
+}
+
+
+/* SCF stylings */
+ul.sidebar-menu li ul.sub li a {
+    font-size: 12px;
+    padding: 6px 0;
+    line-height: 35px;
+    height: 35px;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    color: #aeb2b7;
+}
+ul.sidebar-menu li a {
+    color: #aeb2b7;
+    text-decoration: none;
+    display: block;
+    padding: 15px 0 15px 10px;
+    font-size: 12px;
+    outline: none;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+
+.template-toolbar-icon{
+    float:left;
+    margin:0 5px;
 }
