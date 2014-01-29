@@ -1,220 +1,92 @@
+(function(t){function e(e){return f?e.data("events"):t._data(e[0]).events}function n(t,n,r){var i=e(t),a=i[n];if(!f){var s=r?a.splice(a.delegateCount-1,1)[0]:a.pop();return a.splice(r?0:a.delegateCount||0,0,s),void 0}r?i.live.unshift(i.live.pop()):a.unshift(a.pop())}function r(e,r,i){var a=r.split(/\s+/);e.each(function(){for(var e=0;a.length>e;++e){var r=t.trim(a[e]).match(/[^\.]+/i)[0];n(t(this),r,i)}})}var i=t.fn.jquery.split("."),a=parseInt(i[0]),s=parseInt(i[1]),f=1>a||1==a&&7>s;t.fn.bindFirst=function(){var e=t.makeArray(arguments),n=e.shift();return n&&(t.fn.bind.apply(this,arguments),r(this,n)),this},t.fn.delegateFirst=function(){var e=t.makeArray(arguments),n=e[1];return n&&(e.splice(0,2),t.fn.delegate.apply(this,arguments),r(this,n,!0)),this},t.fn.liveFirst=function(){var e=t.makeArray(arguments);return e.unshift(this.selector),t.fn.delegateFirst.apply(t(document),e),this},f||(t.fn.onFirst=function(e,n){var i=t(this),a="string"==typeof n;if(t.fn.on.apply(i,arguments),"object"==typeof e)for(type in e)e.hasOwnProperty(type)&&r(i,type,a);else"string"==typeof e&&r(i,e,a);return i})})(jQuery);
 window.onload = function () {
     refreshTiny();
-    var loaded = '';
-    $('.template_view').click(function () {
-        loading();
+    $('#modalform').submit(function(e){
+        $('#modalform').find('button[type="submit"]').val("<span class=\"glyphicon glyphicon-cog\"></span> Uploading logo");
+        var fd = new FormData($(this)[0]);
         $.ajax({
-            url     : "templates/" + $(this).data('name') +'?t='+Math.random(),
-            type    : "GET",
+            url     : "includes/ajax.php",
+            type    : "POST",
+            data    : fd,
+            dataType: "html",
+            cache: false,
+            contentType: false,
+            processData: false,
+            async:false,
+            success: function(data){
+                $('#modalform').find('input[name="logo"]').val(data);
+                $('#modalform').find('button[type="submit"]').val("<span class=\"glyphicon glyphicon-ok\"></span>");
+                ajax_right($('#modalform').find('button[type="submit"]'));
+          }
+        });
+        e.preventDefault();
+    });
+    $('[data-action="ajax-right"]').click(function(e){
+        ajax_right($(this));
+        e.preventDefault();
+    });
+    function ajax_right($this){
+        loading();
+        $('#view_site_template').modal('hide');
+        $('#create_new').modal('hide');
+        if($this.data('names')) var params=$this.data('names').split(',');
+        var obj=new Object();
+        if(params) for(var i=0;i<params.length;++i)
+        {
+            if($this.data('where')=='this')
+                $lookin=$this;
+            else
+                $lookin=$($this.data('where'));
+            if($lookin.find('[name="'+params[i]+'"]').val())
+                obj[params[i]]=$lookin.find('[name="'+params[i]+'"]').val();
+            else
+                obj[params[i]]=$lookin.data(params[i]);
+        }
+        obj['fnc']=$this.data('target');
+        $.ajax({
+            url     : "includes/ajax.php",
+            type    : "POST",
+            data    : obj,
             dataType: "html",
             success : function (data) {
                 $('.main-content').html(data);
             }
         });
         return false;
+    }
+    $('.main-content').on('click', '.plusemail', function(){
+        console.log($(this).parent());
+        $(this).parent().append('<div class="input-group">'+
+                '<span class="input-group-addon">Email</span>'+
+                '<input type="text" class="form-control" name="email[]" value="">'+
+                '<span class="input-group-addon deleteemail btn-danger">-</span>'+
+            '</div>');
     });
-    $('.template_edit').click(function () {
-        loading();
-        $.ajax({
-            url     : "includes/new.php",
-            type    : "GET",
-            data    : {'name': $(this).data('name')},
-            dataType: "html",
-            success : function (data) {
-                $('.main-content').html(data);
-            }
-        });
-        return false;
+    $('.main-content').on('click', '.deleteemail', function(){
+        console.log($(this).parent());
+        $(this).parent().remove();
     });
-    $('.edit-site-template').click(function () {
-        loading();
-        $.ajax({
-            url     : "includes/new.php",
-            type    : "GET",
-            data    : {'code': $(this).data('code')},
-            dataType: "html",
-            success : function (data) {
-                $('.main-content').html(data);
-            }
-        });
-        return false;
+    $('.view-site-template').click(function (){
+        $('#view_site_template').find('input[name="code"]').val($(this).data("code"));
+     });
+    $('.create-new').click(function (){
+        $('.new').find('input[name="codenew"]').val($(this).data("code"));
+        $('#modalform').find('button[type="submit"]').val('Submit');
+     });
+    $('.main-content').on('click', '.pluspage', function(e) {
+        $('<textarea name="content[' + $('#nb_textarea').val() + ']" id="content' + $(' #nb_textarea').val() + '" style="width:100%;height:400px;"></textarea>').insertAfter($('#content' + ($('#nb_textarea').val() - 1)));
+        $('#nb_textarea').val(parseInt($('#nb_textarea').val()) + 1);
+        refreshTiny();
     });
-    $('.addTextarea').click(function (e) {
-        console.log('HERE');
-        //$('<textarea name="content[' + $('#nb_textarea').val() + ']" id="content' + $('#nb_textarea').val() + '" style="width:100%;height:400px;"></textarea>').insertAfter($('#content' + ($('#nb_textarea').val() - 1)));
-        //$('#nb_textarea').val(parseInt($('#nb_textarea').val()) + 1);
-        //console.log('<textarea name="content[' + $('#nb_textarea').val() + ']" id="content' + $('#nb_textarea').val() + '" style="width:100%;height:400px;"></textarea>');
-        //refreshTiny();
+    $('.main-content').on('click', '.deletepage', function(e) {
+        var id=$(this).parent().find('iframe').attr('id');
+        if(id.length>0) id=id.substr(0,8);
+        console.log(id);
+        tinymce.remove('#'+id);
+        $('#'+id).remove();
         e.preventDefault();
         return false;
     });
-    $('#overlay').click(function () {
-        $('.popup').css('display', 'none');
-        $(this).css('display', 'none');
-        return false;
-    });
-    /*var options = {
-     // other available options:
-     url     : "includes/new.php",
-     dataType: "html",      // 'xml', 'script', or 'json' (expected server response type)
-     //clearForm: true        // clear all form fields after successful submit
-     success : function (data) {
-     $('#right-wrapper').html(data);
-     }
-     };
-     $('.new').submit(function () {
-     loading();
-     $(this).ajaxSubmit(options);
-     $('#overlay').css('display', 'none');
-     $('.popup').css('display', 'none');
-     return false;
-     });*/
-    /*    var options2;
-     $('.view_data').submit(function () {
-     $('#' + $(this).data('code')).find('.tplOnly').css('display', 'none');
-     if (options2['noajax']) {
-     return true;
-     }
-     loading();
-     $(this).ajaxSubmit(options2);
-     $('#overlay').css('display', 'none');
-     $('.popup').css('display', 'none');
-     return false;
-     });*/
-     $('.tplOnly').click(function () {
-         loading();
-         $('#view_site_template').modal('hide');
-         var id = $('#view_site_template').find('input[name="code"]').val();
-         $.ajax({
-             url     : "./" + id + "/template.tpl?t="+Math.random(),
-             type    : "GET",
-             dataType: "html",
-             success : function (data) {
-                $('.main-content').html(data);
-                }
-         });
-         $('#overlay').css('display', 'none');
-         $('.popup').css('display', 'none');
-         return false;
-     });
-     $('.view-site-template, .export-site-template').click(function (){
-        $('#view_site_template').find('input[name="code"]').val($(this).data("code"));
-     });
-       $('.tplView').click(function () {
-        loading();
-        $('#view_site_template').modal('hide');
-         var id = $('#view_site_template').find('input[name="code"]').val();
-         $.ajax({
-             url     : "./ajax.parser.php",
-             type    : "POST",
-             data    : {
-                'code':id,
-                'month':$('#view_site_template').find('select[name="month"]').val(),
-                'year':$('#view_site_template').find('select[name="year"]').val(),
-             },
-             dataType: "html",
-             success : function (data) {
-                $('.main-content').html(data);
-                }
-         });
-        return false;
-    });
-        $('.exportPdf').click(function () {
-            $('#view_site_template').modal('hide');
-            $('#form_').attr('action',$('#form_').attr('action')+'='+$('#view_site_template').find('input[name="code"]').val());
-            $('#form_').submit();
-            /*
-            loading();
-            $('#view_site_template').modal('hide');
-             var id = $('#view_site_template').find('input[name="code"]').val();
-             $.ajax({
-                 url     : "./includes/export.php",
-                 type    : "POST",
-                 data    : {
-                    'code':id,
-                    'month':$('#view_site_template').find('select[name="month"]').val(),
-                    'year':$('#view_site_template').find('select[name="year"]').val(),
-                 },
-                 dataType: "html",
-                 success : function (data) {
-                    $('.main-content').html(data);
-                    }
-             });
-            return false;
-            */
-        });
-        $('.sendPdf').click(function () {
-         loading();
-         $('#view_site_template').modal('hide');
-         var id = $('#view_site_template').find('input[name="code"]').val();
-         $.ajax({
-             url     : "./includes/email.php",
-             type    : "POST",
-             data    : {
-                'code':id,
-                'month':$('#view_site_template').find('select[name="month"]').val(),
-                'year':$('#view_site_template').find('select[name="year"]').val(),
-             },
-             dataType: "html",
-             success : function (data) {
-                $('.main-content').html(data);
-                }
-         });
-         return false;
-     });
-     
-    $('.delete-site-template').click(function () {
-        var $this=$(this);
-        bootbox.confirm('Are you sure you want to delete this ?', function(result) {
-            if(result) {
-                $.ajax({
-                context : $this,
-                url     : "./src/delete.php",
-                type    : "GET",
-                data    : {'site': $this.data('code')},
-                dataType: "html",
-                success : function (data) {
-                    var code = $(this).data('code');
-                    $(this).parent().html('');
-                    $(this).parent().append(' <a href="#" data-code="'+code+'" data-toggle="modal" class="create-new" data-target="#create_new">New</a>');
-                }
-            });
-        }
-    });
-    });
-    
-    $('.template_delete').click(function () {
-        var $this=$(this);
-        bootbox.confirm('Are you sure you want to delete this ?', function(result) {
-        if(result) {
-            $.ajax({
-                context : $this,
-                url     : "./src/delete.php",
-                type    : "GET",
-                data    : {'tpl': $this.data('name')},
-                dataType: "html",
-                success : function (data) {
-                    emptyView();
-                    $(this).parent().parent().parent().remove();
-                }
-            });
-        }
-    });
-    });
-  
-    $('.create_new').click(function () {
-         $.ajax({
-             context : this,
-             url     : "./includes/new.php",
-             type    : "GET",
-             data    : {'create_new': true},
-             dataType: "html",
-             success : function (data) {
-                $('.main-content').html(data);
-             }
-         });
-         return false;
-     });
     $('#filter').focus(function () {
         $(this).val('');
     });
@@ -241,23 +113,6 @@ window.onload = function () {
 function emptyView() {
     $('.main-content').html('');
 }
-function popupsite(id) {
-    $('#overlay').css('display', 'block');
-    $('#' + id).css('display', 'block');
-    return false;
-}
-/*function edit(id) {
- loading();
- $.ajax({
- url     : "./includes/new.php",
- type    : "GET",
- data    : {'code': id},
- dataType: "html",
- success : function (data) {
- $('#right-wrapper').html(data);
- }
- });
- }*/
 function refreshTiny() {
     tinymce.init({
         selector     : "textarea",
@@ -274,47 +129,10 @@ function refreshTiny() {
         content_css  : "css/style.css",
         relative_urls: false
     });
+    setTimeout(function() {
+        $('.mce-tinymce').prepend('<button class="btn-danger deletepage" style="position:absolute; right:0;, top:0;">X</button>');
+    },2000);
 }
 function loading() {
-    $('.main-content').html('<div style="width:124px;margin:0 auto;margin-top:100px;"><img src="images/loading.gif" /><br /><br />Loading...</div>');
+    $('.main-content').html('<div style="width:124px;margin:0 auto;margin-top:100px;"><span class="glyphicon glyphicon-cog"></span></div>');
 }
-
-$(function () {
-    $('.create-new').on("click", function () {
-        $('form.new input#url').val($(this).closest(".wfc-web-property").find('.wfc-property-url').text());
-        $('form.new input#code').val($(this).data('code'));
-
-    });
-    $('.view_data').on("click", function () {
-        $('form.view_data input#code').val($(this).data('code'));
-
-    });
-
-    $('form.new').on('submit', function (event) {
-        $('#create_new').modal('hide');
-        $form=$(this);
-        var $target = $($form.attr('data-target'));
-        event.preventDefault();
-        $(this).find(':input:disabled').removeAttr('disabled');
-        $.post('includes/new.php', $(this).serialize(),function (data) {
-                $('.main-content').html(data);
-                 toastr.info('New Template Created!');
-            },'html');
-    });
-    /*
-        $.ajax({
-            context : this,
-            url     : "./includes/new.php",
-            type    : "GET",
-            data    : {'create_new': true},
-            dataType: "html",
-            success : function (data) {
-                $('.main-content').html(data);
-                // Display an info toast with no title
-                toastr.info('New Template Created!')
-            }
-        });
-        event.preventDefault();
-    });
-    */
-});

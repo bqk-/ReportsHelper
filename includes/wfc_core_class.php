@@ -10,6 +10,7 @@
 class wfc_core_class {
     public function getSitesList( &$analytics ){
         if( isset($_GET['refresh']) || empty($_SESSION['list_sites']) ){
+            unset($_SESSION['properties']);
             $result   = array();
             $accounts = $analytics->management_accounts->listManagementAccounts();
             if( count( $accounts->getItems() ) > 0 ){
@@ -23,6 +24,7 @@ class wfc_core_class {
                             if( count( $profiles->getItems() ) > 0 ){
                                 $items_s = $profiles->getItems();
                                 foreach( $items_s as $c ){
+                                    $_SESSION['properties'][$c->getId()] = $b->getId();
                                     $result[] = $c;
                                 }
                             }
@@ -31,6 +33,7 @@ class wfc_core_class {
                 }
             }
             $_SESSION['list_sites'] = serialize( $result );
+
         } else{
             $result = unserialize( $_SESSION['list_sites'] );
         }

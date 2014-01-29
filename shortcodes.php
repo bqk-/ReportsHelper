@@ -76,7 +76,7 @@ function new_vs_returning_pie()
   global $demo;
    //New vs Returning
   $data=cache_data('new_vs_returning_pie',MONTH,YEAR);
-  if(!$data && !file_exists(__DIR__.'/'.TABLE_ID.'/cache/'.MONTH.'-'.YEAR.'-pie.png'))
+  if(!$data && !file_exists(PROP_DIR.DS.$_SESSION['properties'][TABLE_ID].DS.TABLE_ID.DS.'cache'.DS.MONTH.'-'.YEAR.'-pie.png'))
   {
     $from=YEAR.'-'.MONTH.'-01';
     $to=YEAR.'-'.MONTH.'-'.cal_days_in_month(CAL_GREGORIAN, MONTH, YEAR);
@@ -93,8 +93,8 @@ function new_vs_returning_pie()
       else
         return 'No datas';
   }
-  else if(file_exists(__DIR__.'/'.TABLE_ID.'/cache/'.MONTH.'-'.YEAR.'-pie.png'))
-      return '<img src="./'.TABLE_ID.'/cache/'.MONTH.'-'.YEAR.'-pie.png" />';
+  else if(file_exists(PROP_DIR.DS.$_SESSION['properties'][TABLE_ID].DS.TABLE_ID.DS.'cache'.DS.MONTH.'-'.YEAR.'-pie.png'))
+      return '<img src=".'.DS.'properties'.DS.$_SESSION['properties'][TABLE_ID].DS.TABLE_ID.DS.'cache'.DS.MONTH.'-'.YEAR.'-pie.png" />';
   else
     if(!empty($data))
       return draw_pie(array($data[1][1],$data[2][1]),array($data[1][0].' - %.1f%%',$data[2][0].' - %.1f%%'),'New vs. Returning');
@@ -252,19 +252,19 @@ function parse_content($content) {
     return $content;
 }
 function cache_data($shortcode,$m,$y) {
-    if(file_exists(__DIR__.'/'.TABLE_ID.'/cache/'.$shortcode.'-'.$m.'-'.$y.'.ini'))
-      return unserialize(file_get_contents(__DIR__.'/'.TABLE_ID.'/cache/'.$shortcode.'-'.$m.'-'.$y.'.ini'));
+    if(file_exists(PROP_DIR.DS.$_SESSION['properties'][TABLE_ID].DS.TABLE_ID.DS.'cache'.DS.$shortcode.'-'.$m.'-'.$y.'.ini'))
+      return unserialize(file_get_contents(PROP_DIR.DS.$_SESSION['properties'][TABLE_ID].DS.TABLE_ID.DS.'cache'.DS.$shortcode.'-'.$m.'-'.$y.'.ini'));
     else
       return false;
 }
 
 function add_cache($data,$shortcode,$m,$y)
 {
-  if(!file_exists(__DIR__.'/'.TABLE_ID))
-    mkdir(__DIR__.'/'.TABLE_ID);
-  if(!file_exists(__DIR__.'/'.TABLE_ID.'/cache'))
-    mkdir(__DIR__.'/'.TABLE_ID.'/cache');
-  $f=fopen(__DIR__.'/'.TABLE_ID.'/cache/'.$shortcode.'-'.$m.'-'.$y.'.ini','w+');
+  if(!file_exists(PROP_DIR.DS.$_SESSION['properties'][TABLE_ID].DS.TABLE_ID))
+    mkdir(PROP_DIR.DS.$_SESSION['properties'][TABLE_ID].DS.TABLE_ID);
+  if(!file_exists(PROP_DIR.DS.$_SESSION['properties'][TABLE_ID].DS.TABLE_ID.DS.'cache'))
+    mkdir(PROP_DIR.DS.$_SESSION['properties'][TABLE_ID].DS.TABLE_ID.DS.'cache');
+  $f=fopen(PROP_DIR.DS.$_SESSION['properties'][TABLE_ID].DS.TABLE_ID.DS.'cache'.DS.$shortcode.'-'.$m.'-'.$y.'.ini','w+');
   fwrite($f,serialize($data));
   fclose($f);
 }

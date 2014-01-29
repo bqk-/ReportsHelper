@@ -1,33 +1,35 @@
 <?php
     ob_start();
+
     require_once 'load.php';
     set_time_limit( 300 );
 
     // Print out authorization URL.
     if( $authHelper->isAuthorized() ){
-        $revoke = "<p id=\"revoke\">
-            <a href='$revokeUrl'>
+        $revoke = "<a href='$revokeUrl'>
               <img src=\"./images/revoke.png\" alt=\"Revoke access\" />
-            </a> |
+            </a>
+            <span class=\"separator\"></span>
             <a href=\"./images/doc.png\" target=\"_blank\">
               <img src=\"./images/documentation.png\" alt=\"Documentation\" />
-            </a> |
+            </a>
+            <span class=\"separator\"></span>
             <a href=\"index.php?refresh\">
               <img src=\"./images/refresh.png\" alt=\"Documentation\" />
-            </a>
-
-  </p>";
+            </a>";
     } else{
         echo "<p id=\"revoke\"><a href='$authUrl'>Grant access to Google Analytics data</a></p>";
         exit;
     }
 
     //Deal with POST datas
-    require_once './src/datas.php';
+    require_once './includes/datas.php';
+
     if (!isset($_GET['export']))
     {
-    header( 'Content-Type: text/html; charset=utf-8' );
-?> <!DOCTYPE>
+    header( 'Content-Type: text/html; charset=utf-8' ); 
+?>
+<!DOCTYPE>
 <html>
 <head>
     <title>WFC</title>
@@ -50,7 +52,6 @@
             require_once './includes/index.php';
         }
     }
-
 ?>
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/scripts.js"></script>
@@ -59,6 +60,10 @@
 <script type="text/javascript" src="js/toastr.min.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/bootbox.min.js"></script>
+<?php
+    if(isset($notif))
+        echo '<script type="text/javascript">toastr.success(\''.$notif.'\',\'Information\');</script>';
+?>
 </body>
 </html>
 

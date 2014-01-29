@@ -6,6 +6,11 @@
 ?>
 
 <div id="container" class="">
+    <div class="row toolbar">
+        Connected as <strong><?php echo $_SESSION['email']; ?></strong>
+        <span class="separator"></span>
+        <?php echo $revoke; ?>
+    </div>
     <div class="row row-offcanvas row-offcanvas-right">
         <?php 
         require_once('sidebar.php'); 
@@ -13,17 +18,19 @@
         <div class="col-xs-12 col-sm-8 main-content">
             <?php
                 if( isset($_POST['code']) && intval( $_POST['code'] ) > 0 ){
-                    $html = file_get_contents( __DIR__.'/../'.intval( $_POST['code'] ).'/template.tpl' );
+                    $html = file_get_contents( PROP_DIR.DS.$_SESSION['properties'][intval($_POST['code'])].DS.intval($_POST['code']).DS.'template.tpl' );
+                    echo $html;
+                }
+                else if(isset($_GET['view']) && $_GET['view']=='templates')
+                {
+                    $html = file_get_contents( TPL_DIR.DS.$_SESSION['email'].DS.$name );
                     echo $html;
                 }
             ?>
         </div>
     </div>
-    <!-- //row -->
-    <hr>
     <footer>
         <p>&copy; Web Full Circle 2013</p>
-        <?php echo $revoke; ?>
     </footer>
 </div><!--/.container-->
 <div class="modal fade" id="view_site_template" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -35,7 +42,6 @@
                         <label for="month">Month </label>
                         <select class="wfc-select form-control" name="month">
                             <?php
-
                                 foreach( $months as $k => $m ){
                                     echo '
                             <option
@@ -60,10 +66,10 @@
                         <input type="hidden" name="code" id="code" class="wfc-input form-control">
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="tplView form-control btn btn-default">View Template</button>
-                        <button type="submit" class="tplOnly form-control btn btn-primary">Template only</button>
+                        <button type="submit" data-action="ajax-right" data-target="tplValues" data-where="#form_" data-names="code,month,year" class="form-control btn btn-default">View Template</button>
+                        <button type="submit" data-action="ajax-right" data-target="customTpl" data-where="#form_" data-names="code" class="form-control btn btn-primary">Template only</button>
                         <button type="submit" class="exportPdf form-control btn btn-info">Export PDF</button>
-                        <button type="submit" class="sendPdf form-control btn btn-danger">Send PDF</button>
+                        <button type="submit" data-action="ajax-right" data-target="email" data-where="#form_" data-names="code,month,year"  class="form-control btn btn-danger">Send PDF</button>
                     </div>
                 </form>
             </div>
@@ -77,35 +83,38 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <form role="form" method="POST" class="new" data-action="?test" enctype="multipart/form-data">
+                <form role="form" method="POST" class="new" id="modalform" enctype="multipart/form-data">
                     <div class="form-group">
                         <input type="text" id="name" name="name" class="wfc-input form-control" placeholder="Enter Name" value=""/>
                     </div>
                     <div class="form-group">
                         <label for="logo_upload">File input</label>
-                        <input type="file" class="wfc-upload form-control" id="logo_upload">
+                        <input type="file" class="wfc-upload form-control" name="logo_upload" id="logo_upload">
+                        <input type="hidden" name="logo">
                         <p class="help-block">Upload a logo</p>
                     </div>
                     <div class="form-group">
                         <input type="text" id="url" name="url" class="wfc-input form-control" placeholder="Enter URL" value=""/>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="code" disabled class="wfc-input form-control" name="code" value=""/>
+                        <input type="text" id="code" readonly="readonly" class="wfc-input form-control" name="codenew" value=""/>
                     </div>
                     <div class="form-group">
                         <label for="template">Template </label>
                         <select class="wfc-select form-control" name="template">
                             <?php
-                                $t = scandir( './templates/' );
+                                $t = scandir( TPL_DIR.DS.$_SESSION['email'] );
                                 foreach( $t as $v ){
-                                    if( substr( $v, -3 ) == 'tpl' && $v != '.' && $v != '..' ){
-                                        echo '<option value="'.$v.'">'.substr( $v, 0, -4 ).'</option>';
-                                    }
+                                    if($v != '.' && $v != '..' )
+                                        if( substr( $v, -3 ) == 'tpl' && $v != '.' && $v != '..' ){
+                                            echo '<option value="'.$v.'">'.substr( $v, 0, -4 ).'</option>';
+                                        }
+                                    
                                 }
                             ?>
                         </select>
                     </div>
-                    <button type="submit" class="form-control btn btn-default">Submit</button>
+                    <button type="submit" data-where="#modalform" data-target="new" data-names="name,codenew,url,template,logo" class="form-control btn btn-default">Submit</button>
                 </form>
             </div>
         </div>

@@ -41,7 +41,6 @@ ul
 a
 {
   color:blue;
-  text-decoration:underline;
 }
 #left-box
 {
@@ -136,23 +135,6 @@ td {
   padding:5px;
   color:#000000;
 }
-#addTextarea {
-  position: fixed;
-  bottom:20px;
-  left:20px;
-  background-color:black;
-  display: block;
-  border-radius: 3px;
-  padding:10px;
-  color:white;
-}
-#addTextarea a {
-  color:white;
-  text-decoration: none;
-}
-#addTextarea a:hover{
-  text-shadow: 1px 1px gray;
-}
 #tinymce {
   margin-bottom:10px;
   font-size: 16px;
@@ -204,69 +186,52 @@ ul.list-sites {
 .list-sites li:hover{
   text-decoration: underline;
 }
-.popup
-{
-  display: none;
-  position:absolute;
-  top:100px;
-  left:300px;
-  width:600px;
-  border-radius: 3px;
-  box-shadow: 2px 2px 2px #000;
-  background-color:white;
-  border:1px solid gray;
-  padding:10px;
-  z-index:9999;
-  opacity: 1;
-  -moz-transition: all 0.3s ease-out;
-  -o-transition: all 0.3s ease-out;
-  -webkit-transition: all 0.3s ease-out;
-}
-#overlay
-{
-  display:none;
-  position:fixed;
-  width:100%;
-  height:100%;
-  background-color:black;
-  top:0;
-  left:0;
-  opacity:0.7;
-  z-index:200;
-}
-#revoke
-{
-  margin:0 auto;
-  text-align: center;
-  padding-left:5%;
-  padding-right:5%;
-  padding-top:10%;
-}
-#notif {
-  width:100%;
-  height:100%;
-  background-color: black;
-  opacity: 0.6;
-  position:absolute;
-  top:0;
-  left:0;
-}
-#notif p {
-  width:400px;
-  padding:10px;
-  border:10px solid white;
-  border-radius: 5px;
-  position:absolute;
-  top:300px;
-  left:300px;
-}
 #profile {
-  width:100%;border:1px solid black;border-bottom:0;
-  height:400px;
+  width:90%;
+  margin:0 auto;
+  margin-top: 10px;
 }
 #profile img {
-  width:234px;
+  width:100%;
   height: auto;
+  margin:0 auto;
+}
+#profile img:after{
+  clear:both;
+}
+.box_logo{
+  width:30%;
+  padding:5px;
+  border:1px solid gray;
+  float: left;
+  border-radius: 5px;
+  margin-right: 5px;
+  position:relative;
+}
+.input-group{
+  width: 67%;
+  margin:5px;
+  float:right;
+}
+.emails-list {
+    width:67%;
+    float:right;
+}
+.emails-list .input-group{
+  float:left;
+  width:87%;
+  margin-left: -5px;
+}
+.emails-list .btn-success {
+  width:10%;
+  float: right;
+  margin:5px;
+}
+.emails-list .btn-danger {
+  cursor: pointer;
+}
+.plusemail{
+  cursor: pointer;
 }
 #filter
 {
@@ -276,21 +241,68 @@ ul.list-sites {
 }
 .del_img
 {
-  width:214px;
+  width:100%;
+  height:100%;
   position:absolute;
-  height:214px;
-  background-color: red;
-  opacity: 0.7;
-  top:10px;
-  left:10px;
+  top:0;
+  left:0;
+  background-color: rgba(51,51,51,0.7);
+  color:white;
   cursor: pointer;
+  text-align:center;
+  padding-top:20%;
 }
 .sidebar-menu{
-height: 100%;
-background: #2a3542;
+  position: relative;
+  height: 100%;
+  background: #2a3542;
+  margin-top: 34px;
+  z-index: 100;
+  position: fixed;
+  overflow: both;
 }
-
-
+.main-content {
+  margin-top: 34px;
+  z-index: 100;
+  margin-left: 33%
+}
+.toolbar {
+  z-index:1000;
+  width:100%;
+  position:fixed;
+  top:0;
+  left:0;
+  background-color:#464646;
+  height:34px;
+  box-shadow: 3px 3px 3px #464646;
+  color:white;
+}
+.toolbar .separator {
+  border-right: 1px solid white;
+  height: 30px;
+  margin-top: 2px;
+}
+.toolbar img:hover{
+  background-color: black;
+}
+.toolbar img, .toolbar a{
+  margin-left: 5px;
+  margin-right: 5px;
+  border-radius: 4px;
+}
+.toolbar a {
+  color:white;
+  text-decoration: none;
+  cursor: pointer;
+}
+.toolbar a:hover {
+  text-shadow: 1px 1px gray;
+}
+.toolbar .right {
+  float: right;
+  margin-right: 100px;
+  margin-top: 6px;
+}
 /* SCF stylings */
 ul.sidebar-menu li ul.sub li a {
     font-size: 12px;
@@ -322,4 +334,52 @@ ul.sidebar-menu li a {
 .template-toolbar-icon{
     float:left;
     margin:0 5px;
+}
+
+.glyphicon-cog {
+  font-size:100px;
+ -webkit-animation-name: spin;
+    -webkit-animation-duration: 4000ms;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-name: spin;
+    -moz-animation-duration: 4000ms;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: linear;
+    -ms-animation-name: spin;
+    -ms-animation-duration: 4000ms;
+    -ms-animation-iteration-count: infinite;
+    -ms-animation-timing-function: linear;
+    
+    animation-name: spin;
+    animation-duration: 4000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+@-ms-keyframes spin {
+    from { -ms-transform: rotate(0deg); }
+    to { -ms-transform: rotate(360deg); }
+}
+@-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}
+.row {
+  margin-left: 0;
+  margin-right: 0;
+}
+.mce-i-wfc:before{
+  content:"W";
 }

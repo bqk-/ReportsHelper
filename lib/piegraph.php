@@ -1,6 +1,10 @@
 <?php // content="text/plain; charset=utf-8"
-require_once ('src/jpgraph.php');
-require_once ('src/jpgraph_pie.php');
+/**
+*	PIE GRAPH LIB
+*	Thibault Miclo
+*/
+require_once (__DIR__.'/../src/jpgraph.php');
+require_once (__DIR__.'/../src/jpgraph_pie.php');
 
 function draw_pie($d,$l,$title) {
 	$data = $d;
@@ -43,10 +47,8 @@ function draw_pie($d,$l,$title) {
 
 
 		// ... and stroke it
-		@unlink('./'.TABLE_ID.'/cache/'.$filename.'.png');
-		$graph->Stroke('./'.TABLE_ID.'/cache/'.$filename.'.png');
+		@unlink(PROP_DIR.DS.$_SESSION['properties'][TABLE_ID].DS.TABLE_ID.DS.'cache'.DS.MONTH.'-'.YEAR.'-pie.png');
+		$graph->Stroke(PROP_DIR.DS.$_SESSION['properties'][TABLE_ID].DS.TABLE_ID.DS.'cache'.DS.MONTH.'-'.YEAR.'-pie.png');
 	}
-	return '<img src="./'.TABLE_ID.'/cache/'.$filename.'.png" />';
+	return '<img src=".'.DS.'properties'.DS.$_SESSION['properties'][TABLE_ID].DS.TABLE_ID.DS.'cache'.DS.MONTH.'-'.YEAR.'-pie.png" />';
 }
-
-?>
