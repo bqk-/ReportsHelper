@@ -33,8 +33,13 @@
     // These must be set with values YOU obtains from the APIs console.
     // See the Usage section above for details.
     const REDIRECT_URL  = 'http://dev.smartydogdesigns.com/analytics/index.php';
+<<<<<<< HEAD
     const CLIENT_ID     = '***************';
     const CLIENT_SECRET = '***************';
+=======
+    const CLIENT_ID     = '******.apps.googleusercontent.com';
+    const CLIENT_SECRET = '*********';
+>>>>>>> 7cd9bb7626abd54ab3634ff39905f8b576639023
     // The file name of this page. Used to create various query parameters to
     // control script execution.
     const THIS_PAGE = 'index.php';
@@ -50,7 +55,11 @@
     $client->setClientId( CLIENT_ID );
     $client->setClientSecret( CLIENT_SECRET );
     $client->setRedirectUri( REDIRECT_URL );
+<<<<<<< HEAD
     $client->setDeveloperKey( '*****************' );
+=======
+    $client->setDeveloperKey( '***********@developer.gserviceaccount.com' );
+>>>>>>> 7cd9bb7626abd54ab3634ff39905f8b576639023
     $client->setApplicationName( APP_NAME );
     $client->setScopes(
         array(ANALYTICS_SCOPE,'https://www.googleapis.com/auth/userinfo.email') );
