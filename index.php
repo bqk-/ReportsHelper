@@ -1,22 +1,19 @@
 <?php
-    ob_start();
 
     require_once 'load.php';
-    set_time_limit( 300 );
 
     // Print out authorization URL.
     if( $authHelper->isAuthorized() ){
-        $revoke = "<a href='$revokeUrl'>
-              <img src=\"./images/revoke.png\" alt=\"Revoke access\" />
+        $revoke = "<a data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Refresh\" href=\"index.php?refresh\">
+              <span class=\"glyphicon glyphicon-retweet\"></span>
             </a>
-            <span class=\"separator\"></span>
-            <a href=\"./images/doc.png\" target=\"_blank\">
-              <img src=\"./images/documentation.png\" alt=\"Documentation\" />
+            <a class=\"wfc-documentation\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Documentation\" href=\"https://github.com/bqk-/ReportsHelper/wiki\" target=\"_blank\">
+              <span class=\"glyphicon glyphicon-list-alt\"></span>
             </a>
-            <span class=\"separator\"></span>
-            <a href=\"index.php?refresh\">
-              <img src=\"./images/refresh.png\" alt=\"Documentation\" />
-            </a>";
+            <a class=\"wfc-logout\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"Logout\" href='$revokeUrl'>
+              <span class=\"glyphicon glyphicon-log-out\"></span>
+            </a>
+            ";
     } else{
         echo "<p id=\"revoke\"><a href='$authUrl'>Grant access to Google Analytics data</a></p>";
         exit;
@@ -27,7 +24,7 @@
 
     if (!isset($_GET['export']))
     {
-    header( 'Content-Type: text/html; charset=utf-8' ); 
+    header( 'Content-Type: text/html; charset=utf-8' );
 ?>
 <!DOCTYPE>
 <html>
@@ -63,6 +60,11 @@
 <?php
     if(isset($notif))
         echo '<script type="text/javascript">toastr.success(\''.$notif.'\',\'Information\');</script>';
+
+    if($users[$_SESSION['email']]>time())
+        echo '<script type="text/javascript">$("#notalone").modal("show");</script>';
+
+    require_once './includes/app_tour_guide.php';
 ?>
 </body>
 </html>

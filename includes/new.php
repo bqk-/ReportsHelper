@@ -15,7 +15,7 @@ function parseTpl($f,$remove=false)
                 $is_intextarea=true;
                 $i++;
             }
- 
+
         }
         else if(preg_match('#</page>#', $buffer))
         {
@@ -26,7 +26,7 @@ function parseTpl($f,$remove=false)
             }
             else
                 $remove=false;
-            
+
         }
         else if(!preg_match('#<page_header#', $buffer) && !preg_match('#</page_header#', $buffer) && $is_intextarea)
         {
@@ -75,7 +75,7 @@ else if(isset($_POST['name']) || isset($_POST['code'])){ //EDIT
         $textarea=parseTpl($f);
     }
 
-    
+
     if(isset($_POST['code']))
         $hidden='<input type="hidden" name="code" value="'.$_POST['code'].'" />';
     else
@@ -122,11 +122,19 @@ else { //NEW TPL
             </div>';
         }
         echo '</div>
-            <div style="clear: both;"></div> 
+            <div style="clear: both;"></div>
         </div>';
     }
-    else
-        echo 'Name : <input type="text" name="template_name" value="'.(isset($_POST['name']) ? substr($_POST['name'],0,-4):'').'" /><br />';
+    else{ ?>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group new-template-name">
+                    <span class="input-group-addon">Template Name</span>
+                    <input type="text" class="form-control" name="template_name" value="<?php echo (isset($_POST['name']) ? substr($_POST['name'],0,-4):''); ?>">
+                </div>
+            </div>
+        </div>
+    <?php }
     ?>
     <?php echo $textarea; ?>
     <input style="text-align:center;margin:0 auto;display:block;" type="submit" id="save_button" class="btn btn-default" value="Save" />

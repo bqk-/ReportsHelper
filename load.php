@@ -33,21 +33,20 @@
     // These must be set with values YOU obtains from the APIs console.
     // See the Usage section above for details.
     const REDIRECT_URL  = 'http://dev.smartydogdesigns.com/analytics/index.php';
-<<<<<<< HEAD
-    const CLIENT_ID     = '***************';
-    const CLIENT_SECRET = '***************';
-=======
-    const CLIENT_ID     = '******.apps.googleusercontent.com';
-    const CLIENT_SECRET = '*********';
->>>>>>> 7cd9bb7626abd54ab3634ff39905f8b576639023
+    const CLIENT_ID     = '*******';
+    const CLIENT_SECRET = '*******';
     // The file name of this page. Used to create various query parameters to
     // control script execution.
     const THIS_PAGE = 'index.php';
     const APP_NAME        = 'WFC Analytics';
     const ANALYTICS_SCOPE = 'https://www.googleapis.com/auth/analytics.readonly';
-    define('ABS_URL', '/home/wfcdemo/public_html/analytics/');
-    define('REAL_URL', 'http://dev.smartydogdesigns.com/analytics/');
-    define('BASE_URL', 'http://dev.smartydogdesigns.com/');
+    define('ABS_URL', '*******');
+    define('REAL_URL', '*******');
+    define('BASE_URL', '*******');
+    define('TIMEOUT',15*60); //15 minutes
+
+
+
     $authUrl   = THIS_PAGE.'?action=auth';
     $revokeUrl = THIS_PAGE.'?action=revoke';
     // Build a new client object to work with authorization.
@@ -55,11 +54,7 @@
     $client->setClientId( CLIENT_ID );
     $client->setClientSecret( CLIENT_SECRET );
     $client->setRedirectUri( REDIRECT_URL );
-<<<<<<< HEAD
-    $client->setDeveloperKey( '*****************' );
-=======
-    $client->setDeveloperKey( '***********@developer.gserviceaccount.com' );
->>>>>>> 7cd9bb7626abd54ab3634ff39905f8b576639023
+    $client->setDeveloperKey( '524564756727@developer.gserviceaccount.com' );
     $client->setApplicationName( APP_NAME );
     $client->setScopes(
         array(ANALYTICS_SCOPE,'https://www.googleapis.com/auth/userinfo.email') );
@@ -70,19 +65,41 @@
     // Create a new storage object to persist the tokens across sessions.
     $storage = new apiSessionStorage();
     $oauth2Service = new Google_Oauth2Service($client);
+    //Is user disconnected
+    $users=unserialize(file_get_contents('users.ini'));
+    $revoke=false;
+    //Disconnect users
+    foreach($users as $k=>$u)
+        if($u<time()-TIMEOUT)
+            unset($users[$k]);
+    /*
+    if(empty($users[$_SESSION['email']]))
+        unset($_SESSION);
+    */
     $authHelper = new AuthHelper($client, $storage, THIS_PAGE);
-    if( isset($_GET['action']) && $_GET['action'] == 'revoke' ){
+    if( (isset($_GET['action']) && $_GET['action'] == 'revoke') ){
+        unset($users[$_SESSION['email']]);
+        file_put_contents('users.ini', serialize($users));
         $authHelper->revokeToken();
         unset($_SESSION);
     } else{
         if( (isset($_GET['action']) && $_GET['action'] == 'auth') || (isset($_GET['code']) && $_GET['code']) ){
             $authHelper->authenticate();
             $_GET['refresh'] = true;
+            unset($_SESSION['list_sites']);
         } else{
             $authHelper->setTokenFromStorage();
             if( $authHelper->isAuthorized() ){
                 $userinfo = $oauth2Service->userinfo->get();
-                $_SESSION['email'] = $userinfo->email;
+                if(!isset($_SESSION['email']))
+                {
+                    //new user conected
+                    if($users[$userinfo->email]>time()-TIMEOUT)
+                        $users[$userinfo->email]=time()+TIMEOUT;
+                    $_SESSION['email'] = $userinfo->email;
+                }
+                $users[$_SESSION['email']]=time();
+                file_put_contents('users.ini', serialize($users));
                 $analytics = new Google_AnalyticsService($client);
                 // Core Reporting API Reference Demo.
                 require_once __DIR__.'/lib/coreReportingApiReference.php';

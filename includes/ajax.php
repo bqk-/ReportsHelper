@@ -5,13 +5,15 @@
 */
 include_once __DIR__.'/../load.php';
 
+if(!$authHelper->isAuthorized())
+    exit('<script type="text/javascript">window.location.href = "'.$authUrl.'";</script>');
 
 if(isset($_POST['fnc']))
     $fnc='ajax_'.preg_replace('#[^a-zA-Z0-9\\-]#i', '', $_POST['fnc']);
 else if(isset($_FILES))
     $fnc='ajax_uploadImg';
 else
-    exit('What do we say to the hacker ? Not today !');
+    $fnc='ajax_revokeUser';
 
 if(function_exists($fnc))
     call_user_func($fnc);
@@ -92,6 +94,13 @@ function ajax_uploadImg()
         exit('What do we say to the hacker ? Not today !');
 }
 
+function ajax_revokeUser() {
+    $users=unserialize(file_get_contents(__DIR__.DS.'users.ini'));
+    unset($users[$_SESSION['email']]);
+    file_put_contents(__DIR__.DS.'users.ini', serialize($users));
+    exit('Disconnected');
+}
+
 function deleteDirectory($dir) {
     if (!file_exists($dir)) return true;
     if (!is_dir($dir)) return @unlink($dir);
@@ -101,3 +110,4 @@ function deleteDirectory($dir) {
     }
     return @rmdir($dir);
 }
+
